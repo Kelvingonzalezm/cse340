@@ -4,7 +4,9 @@ import {
     getCategoryById,
     getProjectsByCategoryId,
     getCategoriesByProjectId,
-    updateCategoryAssignments
+    updateCategoryAssignments,
+    addCategory,
+    updateCategory
 } from '../models/categories.js';
 
 import { getProjectDetails } from '../models/projects.js';
@@ -61,10 +63,67 @@ const processAssignCategoriesForm = async (req, res) => {
     res.redirect(`/project/${projectId}`);
 };
 
+const showNewCategoryForm = (req, res) => {
+    const title = 'Create New Category';
+
+    res.render('new-category', { title });
+};
+
+const processNewCategoryForm = async (req, res) => {
+    const { name } = req.body;
+
+    const newCategory = await addCategory(name);
+
+    req.flash('success', 'Category created successfully.');
+
+    res.redirect(`/category/${newCategory.category_id}`);
+};
+
+const showEditCategoryForm = async (req, res) => {
+    const categoryId = req.params.id;
+
+    const category = await getCategoryById(categoryId);
+    const title = 'Edit Category';
+
+    res.render('edit-category', { title, category });
+};
+
+const processEditCategoryForm = async (req, res) => {
+    const categoryId = req.params.id;
+    const { name } = req.body;
+
+    const updatedCategory = await updateCategory(categoryId, name);
+
+    req.flash('success', 'Category updated successfully.');
+
+    res.redirect(`/category/${updatedCategory.category_id}`);
+};
+
+const categoryValidation = (req, res, next) => {
+    const { name } = req.body;
+
+    if (!name || name.trim().length < 3 || name.trim().length > 100) {
+        req.flash('error', 'Category name must be between 3 and 100 characters.');
+
+        if (req.params.id) {
+            return res.redirect(`/edit-category/${req.params.id}`);
+        }
+
+        return res.redirect('/new-category');
+    }
+
+    next();
+};
+
 // Export any controller functions
 export {
     showCategoriesPage,
     showCategoryDetailsPage,
     showAssignCategoriesForm,
-    processAssignCategoriesForm
+    processAssignCategoriesForm,
+    showNewCategoryForm,
+    processNewCategoryForm,
+    showEditCategoryForm,
+    processEditCategoryForm,
+    categoryValidation
 };
