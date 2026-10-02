@@ -1,11 +1,13 @@
 <%- include('partials/header') %>
 
     <main>
+
         <h1>
             <%= project.title %>
         </h1>
 
-        <p><strong>Description:</strong>
+        <p>
+            <strong>Description:</strong>
             <%= project.description %>
         </p>
 
@@ -15,7 +17,8 @@
                 %>
         </p>
 
-        <p><strong>Location:</strong>
+        <p>
+            <strong>Location:</strong>
             <%= project.location %>
         </p>
 
@@ -35,13 +38,20 @@
                 <% }); %>
         </p>
 
-        <p>
-            <a href="/assign-categories/<%= project.project_id %>">Edit Categories</a>
-        </p>
+        <% if (user && user.role_name==='admin' ) { %>
+            <p>
+                <a href="/assign-categories/<%= project.project_id %>">
+                    Edit Categories
+                </a>
+            </p>
 
-        <p>
-            <a href="/edit-project/<%= project.project_id %>">Edit Project</a>
-        </p>
+            <p>
+                <a href="/edit-project/<%= project.project_id %>">
+                    Edit Project
+                </a>
+            </p>
+            <% } %>
+
     </main>
 
     <%- include('partials/footer') %>
