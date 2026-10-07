@@ -48,6 +48,11 @@ import {
 
 import { testErrorPage } from './controllers/errors.js';
 
+import {
+    processAddVolunteer,
+    processRemoveVolunteer
+} from './controllers/volunteers.js';
+
 const router = express.Router();
 
 router.get('/', showHomePage);
@@ -87,6 +92,10 @@ router.get('/edit-project/:id', requireRole('admin'), showEditProjectForm);
 router.post('/edit-project/:id', requireRole('admin'), projectValidation, processEditProjectForm);
 
 router.get('/project/:id', showProjectDetailsPage);
+
+router.get('/project/:projectId/volunteer', requireLogin, processAddVolunteer);
+
+router.get('/project/:projectId/remove-volunteer', requireLogin, processRemoveVolunteer);
 
 router.get('/categories', showCategoriesPage);
 
